@@ -8,12 +8,6 @@ body {
   list-style: none;
 }
 
-.socialmediaicons ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 .socialmediaicons ul li {
   display: inline-block;
   margin-left: 5px;
@@ -25,5 +19,5 @@ body {
 }
 
 .socialmediaicons {
-	text-align: center;
+  text-align: center;
 }
