@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Feedback</title>
+  <style>
+    label { float: left; width: 100px; }
+    #container { width: 800px; margin: auto; background-color: beige; }
+    main { padding: 50px; }
+    .error { color: red; font-size: 12px; }
+    .counter { font-size: 12px; color: gray; }
+    .error-border { border: 1px solid red; }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <main>
+      <h2>Feedback</h2>
+      <h3>Love something? Hate something? Let us know!</h3>
+      Note: Fields marked with an asterisk(*) are mandatory
+      <br><br>
+      <form method="post" novalidate id="feedbackForm">
+        <label>Title*:</label>
+        <input type="radio" name="title" id="miss" value="miss" required="required" />Miss
+        <input type="radio" name="title" id="mr" value="mr" required="required" />Mr.
+        <input type="radio" name="title" id="mrs" value="mrs" required="required" />Mrs.
+        <br><br>
+
+        <label for="firstName">First Name*:</label>
+        <input type="text" name="firstName" id="firstName" placeholder="First Name" />
+        <span class="error" id="firstNameError"></span>
+        <br><br>
+
+        <label for="lastName">Last Name*:</label>
+        <input type="text" name="lastName" id="lastName" placeholder="Last Name" />
+        <span class="error" id="lastNameError"></span>
+        <br><br>
+
+        <label for="emailId">Email Id*:</label>
+        <input type="text" name="emailId" id="emailId" placeholder="yourname@northeastern.edu" />
+        <span class="error" id="emailIdError"></span>
+        <br><br>
+
+        <label for="phoneNumber">Phone Number*:</label>
+        <input type="text" name="phoneNumber" id="phoneNumber" placeholder="(XXX) XXX-XXXX" />
+        <span class="error" id="phoneNumberError"></span>
+        <br><br>
+
+        <label for="zipcode">ZipCode*:</label>
+        <input type="text" name="zipcode" id="zipcode" placeholder="xxxxxx" />
+        <span class="error" id="zipcodeError"></span>
+        <br><br>
+
+        <label for="source">How did you hear*:</label>
+        <input type='checkbox' name="source" value="facebook" /> Facebook
+        <input type='checkbox' name="source" value="google" /> Google
+        <input type='checkbox' name="source" value="yelp" /> Yelp
+        <span class="error" id="sourceError"></span>
+        <br><br>
+
+        <label for="comments">Comments*:</label>
+        <textarea name="text" id="comments" placeholder="Your comments" rows="5" cols="25"></textarea>
+        <span class="error" id="commentsError"></span>
+        <br><br>
+
+        <label for="streetAddress1">Street Address 1*:</label>
+        <input type="text" name="streetAddress1" id="streetAddress1" placeholder="Street Address 1" />
+        <span class="error" id="streetAddress1Error"></span>
+        <br><br>
+
+        <label for="streetAddress2">Street Address 2:</label>
+        <input type="text" name="streetAddress2" id="streetAddress2" placeholder="Street Address 2" />
+        <span class="counter" id="streetAddress2Counter">0/50 characters used</span>
+        <br><br>
+
+        <label for="dynamicList">Cupcakes:</label>
+        <select id="dynamicList" name="dynamicList">
+          <option value="Select a flavour">Select a flavour</option>
+          <option value="Chocolate">Chocolate</option>
+          <option value="Mango">Mango</option>
+          <option value="Strawberry">Strawberry</option>
+          <option value="Red Velvet">Red Velvet</option>
+        </select>
+        <div id="dynamicCheckboxContainer"></div>
+        <br><br>
+
+        <input type="submit" id="submitButton" disabled>
+        <input type="reset">
+        <br><br>
+      </form>
+
+      <div id="resultsTable"></div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
