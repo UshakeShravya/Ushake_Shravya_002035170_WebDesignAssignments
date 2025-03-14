@@ -1,0 +1,5 @@
+.flex-container {
+    @include flex-center;
+    gap: $spacing-medium;
+    padding: $spacing-medium;
+  }

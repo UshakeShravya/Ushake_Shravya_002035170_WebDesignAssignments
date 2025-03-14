@@ -1,0 +1,91 @@
+@import 'utilities/variables';
+@import 'utilities/functions';
+@import 'utilities/mixins';
+@import 'utilities/placeholders';
+@import 'components/navbar';
+@import 'components/footer';
+@import 'layout/flexbox';
+@import 'layout/grid';
+
+// Variables
+$color-primary: #ff4500; // Orange Red for a more vibrant DIY feel
+$color-secondary: #2e8b57; // Sea Green for a fresh, creative touch
+$color-text: #444;
+$font-primary: 'Poppins', sans-serif; // More stylish font choice
+$spacing-small: 0.8rem;
+$spacing-medium: 1.6rem;
+$spacing-large: 2.4rem;
+
+// Custom Properties
+:root {
+  --color-primary: #{$color-primary};
+  --color-secondary: #{$color-secondary};
+  --color-text: #{$color-text};
+  --font-primary: #{$font-primary};
+  --spacing-small: #{$spacing-small};
+  --spacing-medium: #{$spacing-medium};
+  --spacing-large: #{$spacing-large};
+}
+
+// Interpolation
+$theme: primary;
+
+.button-#{$theme} {
+  background-color: $color-primary;
+  border-radius: 8px;
+  padding: $spacing-small $spacing-medium;
+  transition: all 0.3s ease-in-out;
+}
+
+// Conditional Statements
+@mixin theme-colors($theme) {
+  @if $theme == 'light' {
+    background-color: #f9f9f9;
+    color: #222;
+  } @else {
+    background-color: #222;
+    color: #f9f9f9;
+  }
+}
+
+// Loops
+@for $i from 1 through 3 {
+  .col-#{$i} {
+    width: calc(100% / #{$i});
+    padding: $spacing-small;
+  }
+}
+
+// Maps
+$theme-colors: (
+  primary: $color-primary,
+  secondary: $color-secondary,
+);
+
+.button-primary {
+  background-color: map-get($theme-colors, primary);
+  color: white;
+  font-weight: bold;
+}
+
+// Parent Selector
+.button {
+  background-color: $color-primary;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: darken($color-primary, 10%);
+    transform: scale(1.05);
+  }
+}
+
+// Global Styles
+body {
+  font-family: $font-primary;
+  color: $color-text;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}

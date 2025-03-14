@@ -1,0 +1,19 @@
+.navbar {
+    background-color: $color-primary;
+    padding: $spacing-small;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: $spacing-small;
+  
+      a {
+        color: white;
+        text-decoration: none;
+      }
+    }
+  }

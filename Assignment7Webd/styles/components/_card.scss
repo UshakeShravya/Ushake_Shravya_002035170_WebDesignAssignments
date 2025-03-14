@@ -1,0 +1,12 @@
+.card {
+    @include card-styles;
+  
+    img {
+      width: 100%;
+      border-radius: 8px;
+    }
+  
+    h3 {
+      @extend %heading-styles;
+    }
+  }

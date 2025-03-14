@@ -1,0 +1,39 @@
+body {
+  font-family: "Arial", sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../assets/images/hero-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 6rem;
+}
+
+.featured-recipes .card {
+  transition: transform 0.3s;
+}
+.featured-recipes .card:hover {
+  transform: translateY(-10px);
+}
+.featured-recipes .card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.newsletter-section .form-control {
+  height: 50px;
+}
+.newsletter-section .btn {
+  height: 50px;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+.footer a:hover {
+  color: #ff6347;
+}/*# sourceMappingURL=main.css.map */
