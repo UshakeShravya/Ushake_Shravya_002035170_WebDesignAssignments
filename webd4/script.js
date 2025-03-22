@@ -1,105 +1,263 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("feedbackForm");
-    const submitButton = document.getElementById("submitBtn");
-    const selectList = document.getElementById("options");
-    const checkboxContainer = document.createElement("div");
-    selectList.insertAdjacentElement("afterend", checkboxContainer);
-
-    submitButton.disabled = true; // Ensure submit button starts disabled
-
-    function validateField(input, regex = /.+/, minLength = 0, maxLength = Infinity, errorMsg = "Invalid input") {
-        if (!input) return false;
-        let value = input.value.trim();
-        let isValid = value !== "" && value.length >= minLength && value.length <= maxLength && regex.test(value);
-        showError(input, isValid, errorMsg);
-        return isValid;
+    const submitButton = document.getElementById("submitButton");
+    const dynamicList = document.getElementById("dynamicList");
+    const dynamicCheckboxContainer = document.getElementById("dynamicCheckboxContainer");
+    const streetAddress2 = document.getElementById("streetAddress2");
+    const streetAddress2Counter = document.getElementById("streetAddress2Counter");
+    const resultsTable = document.getElementById("resultsTable");
+  
+    // Initialize the table with headers if it doesn't exist
+    if (!resultsTable.innerHTML.trim()) {
+      resultsTable.innerHTML = `
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Phone Number</th>
+              <th>Zip Code</th>
+              <th>Source</th>
+              <th>Comments</th>
+              <th>Street Address 1</th>
+              <th>Street Address 2</th>
+              <th>Flavour</th>
+              <th>Toppings</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      `;
     }
-
-    function showError(input, isValid, message) {
-        let errorSpan = document.getElementById(input.id + "Error");
-        if (!errorSpan) return;
-        errorSpan.textContent = isValid ? "" : message;
-        errorSpan.style.color = "red";
+  
+    // Function to show error messages
+    function showError(input, errorElement, message) {
+      errorElement.textContent = message;
+      input.classList.add("error-border");
     }
-
-    function formatPhoneNumber(input) {
-        let value = input.value.replace(/\D/g, "").substring(0, 10);
-        let formatted = value;
-        if (value.length > 6) {
-            formatted = `(${value.substring(0, 3)}) ${value.substring(3, 6)}-${value.substring(6)}`;
-        } else if (value.length > 3) {
-            formatted = `(${value.substring(0, 3)}) ${value.substring(3)}`;
-        } else if (value.length > 0) {
-            formatted = `(${value}`;
-        }
-        input.value = formatted;
+  
+    // Function to clear error messages
+    function clearError(input, errorElement) {
+      errorElement.textContent = "";
+      input.classList.remove("error-border");
     }
-
-    document.getElementById("phoneNumber").addEventListener("input", function () {
-        formatPhoneNumber(this);
-        checkFormValidity();
+  
+    // Function to validate all fields
+    function validateForm() {
+      let isValid = true;
+  
+      // First Name Validation
+      const firstName = document.getElementById("firstName");
+      const firstNameError = document.getElementById("firstNameError");
+      if (firstName.value.trim() === "") {
+        showError(firstName, firstNameError, "First Name is required.");
+        isValid = false;
+      } else if (!/^[a-zA-Z]+$/.test(firstName.value)) {
+        showError(firstName, firstNameError, "First Name should only contain letters.");
+        isValid = false;
+      } else if (firstName.value.length < 2 || firstName.value.length > 30) {
+        showError(firstName, firstNameError, "First Name must be between 2 and 30 characters.");
+        isValid = false;
+      } else {
+        clearError(firstName, firstNameError);
+      }
+  
+      // Last Name Validation
+      const lastName = document.getElementById("lastName");
+      const lastNameError = document.getElementById("lastNameError");
+      if (lastName.value.trim() === "") {
+        showError(lastName, lastNameError, "Last Name is required.");
+        isValid = false;
+      } else if (!/^[a-zA-Z]+$/.test(lastName.value)) {
+        showError(lastName, lastNameError, "Last Name should only contain letters.");
+        isValid = false;
+      } else if (lastName.value.length < 2 || lastName.value.length > 30) {
+        showError(lastName, lastNameError, "Last Name must be between 2 and 30 characters.");
+        isValid = false;
+      } else {
+        clearError(lastName, lastNameError);
+      }
+  
+      // Email Validation
+      const emailId = document.getElementById("emailId");
+      const emailIdError = document.getElementById("emailIdError");
+      if (emailId.value.trim() === "") {
+        showError(emailId, emailIdError, "Email is required.");
+        isValid = false;
+      } else if (!/^[^\s@]+@northeastern\.edu$/.test(emailId.value)) {
+        showError(emailId, emailIdError, "Enter a valid northeastern.edu email address.");
+        isValid = false;
+      } else {
+        clearError(emailId, emailIdError);
+      }
+  
+      // Phone Number Validation
+      const phoneNumber = document.getElementById("phoneNumber");
+      const phoneNumberError = document.getElementById("phoneNumberError");
+      if (phoneNumber.value.trim() === "") {
+        showError(phoneNumber, phoneNumberError, "Phone Number is required.");
+        isValid = false;
+      } else if (!/^\(\d{3}\) \d{3}-\d{4}$/.test(phoneNumber.value)) {
+        showError(phoneNumber, phoneNumberError, "Phone Number must be in (XXX) XXX-XXXX format.");
+        isValid = false;
+      } else {
+        clearError(phoneNumber, phoneNumberError);
+      }
+  
+      // Zip Code Validation
+      const zipcode = document.getElementById("zipcode");
+      const zipcodeError = document.getElementById("zipcodeError");
+      if (zipcode.value.trim() === "") {
+        showError(zipcode, zipcodeError, "Zip Code is required.");
+        isValid = false;
+      } else if (!/^\d{5,6}$/.test(zipcode.value)) {
+        showError(zipcode, zipcodeError, "Zip Code must be 5 or 6 digits.");
+        isValid = false;
+      } else {
+        clearError(zipcode, zipcodeError);
+      }
+  
+      // Source Validation (at least one checkbox must be selected)
+      const sourceCheckboxes = document.querySelectorAll('input[name="source"]:checked');
+      const sourceError = document.getElementById("sourceError");
+      if (sourceCheckboxes.length === 0) {
+        showError(sourceCheckboxes[0], sourceError, "Please select at least one source.");
+        isValid = false;
+      } else {
+        clearError(sourceCheckboxes[0], sourceError);
+      }
+  
+      // Comments Validation
+      const comments = document.getElementById("comments");
+      const commentsError = document.getElementById("commentsError");
+      if (comments.value.trim() === "") {
+        showError(comments, commentsError, "Comments are required.");
+        isValid = false;
+      } else if (comments.value.length < 10 || comments.value.length > 500) {
+        showError(comments, commentsError, "Comments must be between 10 and 500 characters.");
+        isValid = false;
+      } else {
+        clearError(comments, commentsError);
+      }
+  
+      // Street Address 1 Validation
+      const streetAddress1 = document.getElementById("streetAddress1");
+      const streetAddress1Error = document.getElementById("streetAddress1Error");
+      if (streetAddress1.value.trim() === "") {
+        showError(streetAddress1, streetAddress1Error, "Street Address 1 is required.");
+        isValid = false;
+      } else {
+        clearError(streetAddress1, streetAddress1Error);
+      }
+  
+      // Dynamic Checkbox Text Field Validation
+      const dynamicCheckbox = document.getElementById("dynamicCheckbox");
+      const dynamicTextField = document.getElementById("dynamicTextField");
+      if (dynamicCheckbox && dynamicCheckbox.checked && (!dynamicTextField || dynamicTextField.value.trim() === "")) {
+        showError(dynamicTextField, document.getElementById("dynamicTextFieldError"), "Toppings are required.");
+        isValid = false;
+      } else if (dynamicTextField) {
+        clearError(dynamicTextField, document.getElementById("dynamicTextFieldError"));
+      }
+  
+      // Enable/Disable Submit Button
+      submitButton.disabled = !isValid;
+      return isValid;
+    }
+  
+    // Input Masking for Phone Number
+    phoneNumber.addEventListener("input", function (e) {
+      let value = e.target.value.replace(/\D/g, "");
+      if (value.length > 10) value = value.slice(0, 10);
+      if (value.length > 6) value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
+      else if (value.length > 3) value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+      else if (value.length > 0) value = `(${value}`;
+      e.target.value = value;
     });
-
-    function checkFormValidity() {
-        const firstNameValid = validateField(document.getElementById("firstName"), /^[a-zA-Z]+$/, 2, 30, "First name must be 2-30 letters");
-        const lastNameValid = validateField(document.getElementById("lastName"), /^[a-zA-Z]+$/, 2, 30, "Last name must be 2-30 letters");
-        const emailValid = validateField(document.getElementById("emailId"), /^[^\s@]+@northeastern\.edu$/, 0, 100, "Email must be @northeastern.edu");
-        const phoneValid = validateField(document.getElementById("phoneNumber"), /^\(\d{3}\) \d{3}-\d{4}$/, 0, 14, "Phone must be (XXX) XXX-XXXX");
-        const zipValid = validateField(document.getElementById("zipcode"), /^\d{5,6}$/, 5, 6, "Zip code must be 5 or 6 digits");
-        const commentsValid = validateField(document.getElementById("comments"), /.+/, 10, 500, "Comments must be between 10-500 characters");
-
-        submitButton.disabled = !(firstNameValid && lastNameValid && emailValid && phoneValid && zipValid && commentsValid);
-    }
-
-    selectList.addEventListener("change", function () {
-        checkboxContainer.innerHTML = "";
-        if (selectList.value) {
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = "dynamicCheckbox";
-            
-            const label = document.createElement("label");
-            label.htmlFor = "dynamicCheckbox";
-            label.textContent = ` Select Toppings for ${selectList.options[selectList.selectedIndex].text}`;
-            
-            const textField = document.createElement("input");
-            textField.type = "text";
-            textField.id = "extraField";
-            textField.placeholder = "Enter extra details";
-            textField.style.display = "none";
-            
-            checkbox.addEventListener("change", function () {
-                textField.style.display = checkbox.checked ? "block" : "none";
-            });
-            
-            checkboxContainer.appendChild(checkbox);
-            checkboxContainer.appendChild(label);
-            checkboxContainer.appendChild(textField);
-        }
+  
+    // Live Character Counter for Street Address 2
+    streetAddress2.addEventListener("input", function () {
+      const length = streetAddress2.value.length;
+      streetAddress2Counter.textContent = `${length}/50 characters used`;
     });
-
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const table = document.getElementById("resultsTable").getElementsByTagName("tbody")[0];
-        let newRow = table.insertRow();
-        newRow.insertCell(0).innerText = document.getElementById("firstName").value;
-        newRow.insertCell(1).innerText = document.getElementById("lastName").value;
-        newRow.insertCell(2).innerText = document.getElementById("emailId").value;
-        newRow.insertCell(3).innerText = document.getElementById("phoneNumber").value;
-        newRow.insertCell(4).innerText = document.getElementById("zipcode").value;
-        newRow.insertCell(5).innerText = document.getElementById("options").value;
-        newRow.insertCell(6).innerText = document.getElementById("address2").value || "";
-        newRow.insertCell(7).innerText = document.getElementById("comments").value;
-        newRow.insertCell(8).innerText = document.getElementById("extraField") ? document.getElementById("extraField").value : "";
-
+  
+    // Dynamic Checkbox and Text Field Creation
+    dynamicList.addEventListener("change", function () {
+      const selectedOption = dynamicList.value;
+      dynamicCheckboxContainer.innerHTML = `
+        <input type="checkbox" id="dynamicCheckbox" name="dynamicCheckbox"> Toppings
+        <div id="dynamicTextFieldContainer" style="display: none;">
+          <input type="text" id="dynamicTextField" name="dynamicTextField" placeholder="Enter toppings">
+          <span class="error" id="dynamicTextFieldError"></span>
+        </div>
+      `;
+  
+      const dynamicCheckbox = document.getElementById("dynamicCheckbox");
+      const dynamicTextFieldContainer = document.getElementById("dynamicTextFieldContainer");
+  
+      dynamicCheckbox.addEventListener("change", function () {
+        if (dynamicCheckbox.checked) {
+          dynamicTextFieldContainer.style.display = "block";
+        } else {
+          dynamicTextFieldContainer.style.display = "none";
+        }
+        validateForm();
+      });
+  
+      const dynamicTextField = document.getElementById("dynamicTextField");
+      if (dynamicTextField) {
+        dynamicTextField.addEventListener("input", validateForm);
+      }
+    });
+  
+    // Form Submission
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (validateForm()) {
+        const formData = new FormData(form);
+        const tbody = resultsTable.querySelector("tbody");
+  
+        // Get selected sources (Facebook, Google, Yelp)
+        const sources = Array.from(document.querySelectorAll('input[name="source"]:checked'))
+          .map(checkbox => checkbox.value)
+          .join(", ");
+  
+        // Get selected flavour and toppings
+        const flavour = dynamicList.value;
+        const toppings = document.getElementById("dynamicTextField")?.value || "";
+  
+        // Create a new row for the submission
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+          <td>${formData.get("title") || ""}</td>
+          <td>${formData.get("firstName") || ""}</td>
+          <td>${formData.get("lastName") || ""}</td>
+          <td>${formData.get("emailId") || ""}</td>
+          <td>${formData.get("phoneNumber") || ""}</td>
+          <td>${formData.get("zipcode") || ""}</td>
+          <td>${sources || ""}</td>
+          <td>${formData.get("text") || ""}</td>
+          <td>${formData.get("streetAddress1") || ""}</td>
+          <td>${formData.get("streetAddress2") || ""}</td>
+          <td>${flavour || ""}</td>
+          <td>${toppings || ""}</td>
+        `;
+        tbody.appendChild(newRow);
+  
+        // Reset the form after submission
         form.reset();
         submitButton.disabled = true;
+  
+        // Clear dynamic checkbox and text field
+        dynamicCheckboxContainer.innerHTML = "";
+      }
     });
-
-    document.querySelectorAll("input, textarea, select").forEach(input => {
-        input.addEventListener("input", checkFormValidity);
+  
+    // Validate form on keyup events
+    form.querySelectorAll("input, textarea").forEach((input) => {
+      input.addEventListener("keyup", validateForm);
     });
-
-    checkFormValidity();
-});
+  });
