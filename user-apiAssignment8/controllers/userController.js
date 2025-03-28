@@ -145,3 +145,35 @@ exports.uploadImage = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Login user
+exports.login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    // Find user by email (username)
+    const user = await User.findOne({ email: username });
+    
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    // Compare password
+    const isMatch = await user.comparePassword(password);
+    
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    res.status(200).json({ 
+      success: true,
+      user: {
+        fullName: user.fullName,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(400).json({ error: error.message });
+  }
+};

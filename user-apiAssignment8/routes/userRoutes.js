@@ -320,4 +320,71 @@ router.post('/uploadImage', upload.single('image'), async (req, res, next) => {
   }
 });
 
+/**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Users]
+ *     description: Authenticates a user with their email and password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: "john.doe@example.com"
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 example: "StrongP@ss123"
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     fullName:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     email:
+ *                       type: string
+ *                       example: "john.doe@example.com"
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid credentials"
+ */
+router.post('/user/login', async (req, res, next) => {
+  try {
+    console.log('Login Request Body:', req.body);
+    await userController.login(req, res);
+  } catch (error) {
+    console.error('Login Error:', error);
+    next(error);
+  }
+});
+
 module.exports = router;
